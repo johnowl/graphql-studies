@@ -1,4 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga'
+import { v4 as uuidv4 } from 'uuid'
 
 const users = [
     { id: "123", name: "José", email: "jose@mail.com" },
@@ -25,6 +26,9 @@ const typeDefs = `
         grades: [Int!]!
         users(query: String): [User!]!
         posts: [Post!]!
+    }
+    type Mutation {
+        createUser(name: String!, email: String!): User!
     }
     type User {
         id: ID!
@@ -87,6 +91,23 @@ const resolvers = {
             console.log(context)
             console.log(info)
             return `Hello ${args.name}`
+        }
+    },
+    Mutation: {
+        createUser(parent, args, context, info) {
+            const emailTaken = users.some((user) => user.email === args.email)
+
+            if (emailTaken) {
+                throw new Error('E-mail taken.')
+            }
+
+            const user = { 
+                id: uuidv4(), 
+                name: args.name, 
+                email: args.email 
+            }
+
+            return user
         }
     },
     User: {
