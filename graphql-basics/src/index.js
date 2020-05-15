@@ -28,7 +28,11 @@ const typeDefs = `
         posts: [Post!]!
     }
     type Mutation {
-        createUser(name: String!, email: String!): User!
+        createUser(data: CreateUserInput): User!
+    }
+    input CreateUserInput {
+        name: String!
+        email: String!
     }
     type User {
         id: ID!
@@ -95,7 +99,7 @@ const resolvers = {
     },
     Mutation: {
         createUser(parent, args, context, info) {
-            const emailTaken = users.some((user) => user.email === args.email)
+            const emailTaken = users.some((user) => user.email === args.data.email)
 
             if (emailTaken) {
                 throw new Error('E-mail taken.')
@@ -103,9 +107,10 @@ const resolvers = {
 
             const user = { 
                 id: uuidv4(), 
-                name: args.name, 
-                email: args.email 
+                ...args.data
             }
+
+            users.push(user)
 
             return user
         }
