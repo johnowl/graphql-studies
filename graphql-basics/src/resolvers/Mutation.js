@@ -16,6 +16,27 @@ const Mutation = {
         db.users.push(user)
 
         return user
+    },
+    updateUser(parent, args, { db }, info) {
+        const { id, data } = args
+        const user = db.users.find((user) => user.id === id)
+
+        if (!user) {
+            throw new Error('User not found')
+        }
+
+        if (typeof data.email === 'string') {
+            const emailTaken = db.users.some((user) => user.email === data.email && user.id != id)
+            throw new Error('E-mail taken')
+
+            user.email = data.email
+        }
+
+        if (typeof data.name === 'string') {
+            user.name = data.name
+        }
+
+        return user
     }
 }
 

@@ -11,11 +11,21 @@ type Query {
     posts: [Post!]!
 }
 type Mutation {
-    createUser(data: CreateUserInput): User!
+    createUser(data: CreateUserInput!): User!
+    updateUser(id: ID!, data: UpdateUserInput!): User!
 }
+
+type Subscription {
+    count: Int!
+}
+
 input CreateUserInput {
     name: String!
     email: String!
+}
+input UpdateUserInput {
+    name: String
+    email: String
 }
 type User {
     id: ID!
