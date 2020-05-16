@@ -1,0 +1,64 @@
+type Query {
+    id: ID!
+    name: String!
+    age: Int!
+    isEmployed: Boolean!
+    gpa: Float
+    me: User!
+    greeting(name: String!): String!
+    grades: [Int!]!
+    users(query: String): [User!]!
+    posts: [Post!]!
+}
+
+type Mutation {
+    createUser(data: CreateUserInput!): User!
+    updateUser(id: ID!, data: UpdateUserInput!): User!
+    createPost(data: CreatePostInput): Post!
+}
+
+type Subscription {
+    count: Int!
+    post: PostMutationPayload!
+}
+
+input CreateUserInput {
+    name: String!
+    email: String!
+}
+
+input UpdateUserInput {
+    name: String
+    email: String
+}
+
+input CreatePostInput {
+    title: String!
+    body: String!
+    author: ID!
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    posts: [Post!]!
+}
+
+type Post {
+    id: ID!
+    title: String!
+    body: String!
+    author: User!
+}
+
+type  PostMutationPayload {
+    mutation: MutationType!
+    post: Post!
+}
+
+enum MutationType {
+    CREATED
+    UPDATED
+    DELETED
+}
