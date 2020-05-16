@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sat May 16 2020 14:16:53 GMT-0300 (GMT-03:00)
+# timestamp: Sat May 16 2020 14:43:40 GMT-0300 (GMT-03:00)
 
 type AggregateComment {
   count: Int!
@@ -323,6 +323,7 @@ type Post implements Node {
   id: ID!
   title: String!
   body: String!
+  author: User!
   published: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -343,16 +344,24 @@ input PostCreateInput {
   title: String!
   body: String!
   published: Boolean!
+  author: UserCreateOneWithoutPostsInput!
 }
 
-input PostCreateManyInput {
-  create: [PostCreateInput!]
+input PostCreateManyWithoutAuthorInput {
+  create: [PostCreateWithoutAuthorInput!]
   connect: [PostWhereUniqueInput!]
 }
 
 input PostCreateOneInput {
   create: PostCreateInput
   connect: PostWhereUniqueInput
+}
+
+input PostCreateWithoutAuthorInput {
+  id: ID
+  title: String!
+  body: String!
+  published: Boolean!
 }
 
 """An edge in a connection."""
@@ -608,12 +617,14 @@ input PostUpdateDataInput {
   title: String
   body: String
   published: Boolean
+  author: UserUpdateOneRequiredWithoutPostsInput
 }
 
 input PostUpdateInput {
   title: String
   body: String
   published: Boolean
+  author: UserUpdateOneRequiredWithoutPostsInput
 }
 
 input PostUpdateManyDataInput {
@@ -622,22 +633,22 @@ input PostUpdateManyDataInput {
   published: Boolean
 }
 
-input PostUpdateManyInput {
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
-  set: [PostWhereUniqueInput!]
-  disconnect: [PostWhereUniqueInput!]
-  delete: [PostWhereUniqueInput!]
-  update: [PostUpdateWithWhereUniqueNestedInput!]
-  updateMany: [PostUpdateManyWithWhereNestedInput!]
-  deleteMany: [PostScalarWhereInput!]
-  upsert: [PostUpsertWithWhereUniqueNestedInput!]
-}
-
 input PostUpdateManyMutationInput {
   title: String
   body: String
   published: Boolean
+}
+
+input PostUpdateManyWithoutAuthorInput {
+  create: [PostCreateWithoutAuthorInput!]
+  connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  disconnect: [PostWhereUniqueInput!]
+  delete: [PostWhereUniqueInput!]
+  update: [PostUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [PostUpdateManyWithWhereNestedInput!]
+  deleteMany: [PostScalarWhereInput!]
+  upsert: [PostUpsertWithWhereUniqueWithoutAuthorInput!]
 }
 
 input PostUpdateManyWithWhereNestedInput {
@@ -652,9 +663,15 @@ input PostUpdateOneRequiredInput {
   upsert: PostUpsertNestedInput
 }
 
-input PostUpdateWithWhereUniqueNestedInput {
+input PostUpdateWithoutAuthorDataInput {
+  title: String
+  body: String
+  published: Boolean
+}
+
+input PostUpdateWithWhereUniqueWithoutAuthorInput {
   where: PostWhereUniqueInput!
-  data: PostUpdateDataInput!
+  data: PostUpdateWithoutAuthorDataInput!
 }
 
 input PostUpsertNestedInput {
@@ -662,10 +679,10 @@ input PostUpsertNestedInput {
   create: PostCreateInput!
 }
 
-input PostUpsertWithWhereUniqueNestedInput {
+input PostUpsertWithWhereUniqueWithoutAuthorInput {
   where: PostWhereUniqueInput!
-  update: PostUpdateDataInput!
-  create: PostCreateInput!
+  update: PostUpdateWithoutAuthorDataInput!
+  create: PostCreateWithoutAuthorInput!
 }
 
 input PostWhereInput {
@@ -845,6 +862,7 @@ input PostWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  author: UserWhereInput
 }
 
 input PostWhereUniqueInput {
@@ -902,12 +920,23 @@ input UserCreateInput {
   id: ID
   name: String!
   email: String!
-  posts: PostCreateManyInput
+  posts: PostCreateManyWithoutAuthorInput
 }
 
 input UserCreateOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutPostsInput {
+  create: UserCreateWithoutPostsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutPostsInput {
+  id: ID
+  name: String!
+  email: String!
 }
 
 """An edge in a connection."""
@@ -980,13 +1009,13 @@ input UserSubscriptionWhereInput {
 input UserUpdateDataInput {
   name: String
   email: String
-  posts: PostUpdateManyInput
+  posts: PostUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateInput {
   name: String
   email: String
-  posts: PostUpdateManyInput
+  posts: PostUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateManyMutationInput {
@@ -1001,9 +1030,26 @@ input UserUpdateOneRequiredInput {
   upsert: UserUpsertNestedInput
 }
 
+input UserUpdateOneRequiredWithoutPostsInput {
+  create: UserCreateWithoutPostsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutPostsDataInput
+  upsert: UserUpsertWithoutPostsInput
+}
+
+input UserUpdateWithoutPostsDataInput {
+  name: String
+  email: String
+}
+
 input UserUpsertNestedInput {
   update: UserUpdateDataInput!
   create: UserCreateInput!
+}
+
+input UserUpsertWithoutPostsInput {
+  update: UserUpdateWithoutPostsDataInput!
+  create: UserCreateWithoutPostsInput!
 }
 
 input UserWhereInput {

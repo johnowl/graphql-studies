@@ -11,6 +11,7 @@ type Post {
   id: ID! @id
   title: String!
   body: String!
+  author: User!
   published: Boolean!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt  
