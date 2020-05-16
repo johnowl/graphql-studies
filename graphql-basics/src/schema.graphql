@@ -53,6 +53,12 @@ type Post {
 }
 
 type  PostMutationPayload {
-    mutation: String!
+    mutation: MutationType!
     post: Post!
+}
+
+enum MutationType {
+    CREATED
+    UPDATED
+    DELETED
 }
